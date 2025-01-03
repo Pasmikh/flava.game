@@ -35,9 +35,20 @@
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
+  <!-- Using custom service worker to cache assets -->
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/custom_service_worker.js');
+      // Dynamically use the <base href> value to construct the service worker path
+      const baseHref = document.querySelector('base').getAttribute('href') || '/';
+      const serviceWorkerPath = `${baseHref}custom_service_worker.js`;
+      
+      navigator.serviceWorker.register(serviceWorkerPath, { scope: baseHref })
+        .then((registration) => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch((error) => {
+          console.error('Service Worker registration failed:', error);
+        });
     }
   </script>
 </body>
